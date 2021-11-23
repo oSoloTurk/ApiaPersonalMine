@@ -1,0 +1,875 @@
+#You can put alternative arguments here.
+#You do not need to set same number of arguments in the localization process, the system automatically manages this situation.
+
+command-arguments:
+  reload: reload
+  chancepacks-give: chancepack give
+  chancepacks-remove: chancepack remove
+  chancepacks-edit: chancepack edit
+  chancepacks-create: chancepack create
+  selector: selector
+  mineblock-create: mineblock create
+  timeleft: timeleft
+  renewaldate-reload: renewaldate reload
+  renewaldate-create: renewaldate create
+  renewaldate-delete: renewaldate delete
+  renewaldate-set: renewaldate set
+  appearances-reset: appearance reset
+  generator-give: generator give
+  admin: admin
+  helps: helps
+
+#In the help command, the commands that player have permission are listed with usage.
+#Usages are shown when length of argument don't match.
+usage:
+  generator-give: 
+  - '&7&l| &a➣ &c/apm generator give <player-name> [amount] &8&l| &7Give a generator to player'
+  reload:
+  - '&7&l| &a➣ &c/apm reload &8&l| &7Reload system.'
+  chancepacks-give:
+  - '&7&l| &a➣ &c/apm chancepacks give <packet-name> <player-name> &8&l| &7Give the chance pack to entered player'
+  chancepacks-remove:
+  - '&7&l| &a➣ &c/apm chancepacks remove <packet-name> <player-name> &8&l| &7Retrieve a luck package given to a player.'
+  chancepacks-edit:
+  - '&7&l| &a➣ &c/apm chancepacks edit <packet-name> add <material-name> <chance> <data_value>
+    &8&l| &7Add an item to the chance pack..'
+  - '&7&l| &a➣ &c/apm chancepacks edit <packet-name> remove <material-name> <chance> <data_value>
+    &8&l| &7Take an item out of the chance pack.'
+  - '&7&l| &a➣ &c/apm chancepacks edit <packet-name> money <value>
+    &8&l| &7You Change the Money Requirement of the Chance Pack'
+  - '&7&l| &a➣ &c/apm chancepacks edit <packet-name> exp <value>
+    &8&l| &7You Change the EXP Requirement of the Chance Pack'
+  - '&7&l| &a➣ &c/apm chancepacks edit <packet-name> defaultmode <value>
+    &8&l| &7You Change the default mode of the Chance Pack'
+  chancepacks-create:
+  - '&7&l| &a➣ &c/apm chancepacks create <packet-name> &8&l| &7Create a new chance pack'
+  selector:
+  - '&7&l| &a➣ &c/apm selector single &8&l| &7Give a single-block selection tool'
+  - '&7&l| &a➣ &c/apm selector multi &8&l| &7Give a multi-block selection tool'
+  mineblock-create:
+  - '&7&l| &a➣ &c/apm mineblock create &8&l| &7Creates mineblocks from selected points with the multi-block selection tool.'
+  timeleft:
+  - '&7&l| &a➣ &c/apm timeleft <player-name> &8&l| &7Shows the remaining time until the appearances are deleted for the entered player.'
+  renewaldate-reload:
+  - '&7&l| &a➣ &c/apm renewaldate reload <player-name> &8&l| &7Resets the cooldown time for the entered player according to the player''s permissions'
+  renewaldate-set:
+  - '&7&l| &a➣ &c/apm renewaldate set <permission> <minutes> &8&l| &7Update the permission pack value'
+  renewaldate-create:
+  - '&7&l| &a➣ &c/apm renewaldate create <permission> <minutes> &8&l| &7Create a new permission pack with value'
+  renewaldate-delete:
+  - '&7&l| &a➣ &c/apm renewaldate remove <permission> &8&l| &7Delete the permission pack'
+  appearances-reset:
+  - '&7&l| &a➣ &c/apm appearance reset <player-name> &8&l| &7Resets all block appearances for a player.'
+  helps:
+  - '&7&l| &a➣ &c/apm helps &8&l| &7Shows commands you can use.'
+  main-command:
+  - '&7&l| &a➣ &c/apm &8&l| &7Opens the user panel.'
+
+#Both block breaking and chunk operations are not run on inactive worlds.
+active-worlds:
+- world
+#It is the format to be used in time displays in the system.
+date-format: hh:mm:ss
+database:
+  #Compress process provides 98.5% size gain.
+  #However, attention should be paid to the extra processing load it will create.
+  compress: false
+  #You can use SQL or MYSQL.
+  mode: SQL
+  for_mysql: #MYSQL credentials
+    host: localhost
+    database: database
+    port: 3306
+    user: root
+    password: '123456'
+
+#It is the use for analy your system errors
+debug-mode: false
+
+#You can set the selectors used to create mineblocks.
+mine-block-selector:
+  #Required permission for both single and multi selector usage.
+  permission: apm.admin.selectors
+  #Single selector item
+  single:
+    block:
+      material: WOODEN_AXE
+      name: '&8&l[ &eSingle MineBlock Selector Tool &8&l]'
+      lore:
+      - ''
+      - '&c&l➣ &7Converts blocks you click to the mine block.'
+      - ''
+      - '&c&l➣ &7Hold &cShift &7to delete.'
+      - ''
+  #Multi selector item
+  multi:
+    block:
+      material: WOODEN_AXE
+      name: '&8&l[ &eMulti MineBlock Selector Tool &8&l]'
+      lore:
+      - ''
+      - '&c&l➣ &cLeft &7click to select first position of selector.'
+      - '&c&l➣ &cRight &7click to select second position of selector.'
+      - '&c&l➣ &7After you select positions you can type &c/apm mineblock create &7to create mineblock(s).'
+      - ''
+      - '&c&l➣ &7Hold &cShift &7to delete.'
+      - ''
+#Chance packs
+chances:
+  #Pack Name
+  stone_age:
+    #More Details
+    description:
+    - '&7The mysterious mines you find in the &8Stone &7Age will be'
+    - '&7the greatest treasures of the primitive times.'
+    - ''
+    - '&7&l[➣ &cPoor Quality Resource Chance: %55'
+    - '&7&l[➣ &cMedium Quality Resource Chance: %35'
+    - '&7&l[➣ &cHigh Quality Resource Chance: %10'
+    #Do all Players have this package?
+    default: true
+    #Is this pack a player can buy?
+    sell: false
+    #Costs for salable luck packages
+    cost:
+      money: 10000
+      exp: 5000
+    blocks:
+      OBSIDIAN:
+        chance: 2
+      COBBLESTONE:
+        chance: 10
+      STONE:
+        chance: 15
+      GRAVEL:
+        chance: 3
+      COAL_ORE:
+        chance: 3
+      IRON_ORE:
+        chance: 2
+      GOLD_ORE:
+        chance: 2
+      SAND:
+        chance: 8
+  iron_age:
+    description:
+    - '&7The mysterious mines you find in the &fIron Age'
+    - '&7will be able to process the greatest treasures'
+    - '&7of primitive times and will be the mainstay of'
+    - '&7the prominent ones of the age.'
+    - ''
+    - '&7&l[➣ &cPoor Quality Resource Chance: %40'
+    - '&7&l[➣ &cMedium Quality Resource Chance: %50'
+    - '&7&l[➣ &cHigh Quality Resource Chance: %10'
+    default: false
+    sell: true
+    cost:
+      money: 100000
+      exp: 5000
+    blocks:
+      OBSIDIAN:
+        chance: 3
+      COBBLESTONE:
+        chance: 10
+      STONE:
+        chance: 15
+      GRAVEL:
+        chance: 6
+      COAL_ORE:
+        chance: 5
+      IRON_ORE:
+        chance: 10
+      GOLD_ORE:
+        chance: 3
+      SAND:
+        chance: 10
+  golden_age:
+    description:
+    - '&7The mysterious mines you find in the &eGolden Age'
+    - '&7will be the biggest transition to the times of power'
+    - '&7of money and will change the balance of power.'
+    - ''
+    - '&7&l[➣ &cPoor Quality Resource Chance: %31'
+    - '&7&l[➣ &cMedium Quality Resource Chance: %27'
+    - '&7&l[➣ &cHigh Quality Resource Chance: %42'
+    default: false
+    sell: true
+    cost:
+      money: 10000
+      exp: 5000
+    blocks:
+      OBSIDIAN:
+        chance: 5
+      COBBLESTONE:
+        chance: 10
+      STONE:
+        chance: 15
+      GRAVEL:
+        chance: 6
+      COAL_ORE:
+        chance: 5
+      IRON_ORE:
+        chance: 15
+      GOLD_ORE:
+        chance: 8
+      SAND:
+        chance: 10
+      DIAMOND_ORE:
+        chance: 3
+      EMERALD_ORE: 
+        chance: 3
+  electric_age:
+    description:
+    - '&7The mysterious mines you find in the &cElectric Age'
+    - '&7will contain resources specific to electricity,'
+    - '&7which is the cornerstone of technology.'
+    - ''
+    - '&7&l[➣ &cPoor Quality Resource Chance: %33'
+    - '&7&l[➣ &cMedium Quality Resource Chance: %42'
+    - '&7&l[➣ &cHigh Quality Resource Chance: %35'
+    default: false
+    sell: true
+    cost:
+      money: 10000
+      exp: 5000
+    blocks:
+      OBSIDIAN:
+        chance: 3
+      COBBLESTONE:
+        chance: 5
+      STONE:
+        chance: 10
+      GRAVEL:
+        chance: 6
+      COAL_ORE:
+        chance: 5
+      DIAMOND_ORE:
+        chance: 3
+      EMERALD_ORE: 
+        chance: 3
+      REDSTONE_ORE:
+        chance: 5
+      REDSTONE_BLOCK:
+        chance: 5
+  magic_age:
+    description:
+    - '&7The mysterious mines you find in the &bMagic Age'
+    - '&7will contain the crystals needed to cast magic.'
+    - ''
+    - '&7&l[➣ &cPoor Quality Resource Chance: %33'
+    - '&7&l[➣ &cMedium Quality Resource Chance: %42'
+    - '&7&l[➣ &cHigh Quality Resource Chance: %35'
+    default: false
+    sell: true
+    cost:
+      money: 10000
+      exp: 5000
+    blocks:
+      OBSIDIAN:
+        chance: 3
+      COBBLESTONE:
+        chance: 5
+      STONE:
+        chance: 10
+      GRAVEL:
+        chance: 6
+      COAL_ORE:
+        chance: 5
+      DIAMOND_ORE:
+        chance: 3
+      EMERALD_ORE: 
+        chance: 3
+      LAPIS_BLOCK:
+        chance: 5
+      LAPIS_ORE:
+        chance: 5
+#Although it is found in mineblocks, it prevents the formation of personal mines in these blocks.
+block-black-list:
+  #Unless you are using it, you should keep it turned off to save performance.
+  enabled: true
+  worlds:
+    world: #Name of world
+      #Material;data_value
+      list:
+      - 'AIR;0'
+#The open world filter automatically turns the blocks you set in the chunk boundaries you specify into mineblocks.
+open-world-filter:
+  # It is recommended to keep it turned off for performance unless you use it.
+  enabled: true
+  #Material;data_value;chance
+  filter-blocks:
+  - DIAMOND_ORE;0;100
+  - GOLD_ORE;0;50
+  - STONE;0;2
+  chunk-limits:
+    #World name
+    world:
+      x_coord:
+        min: 0
+        max: 17
+      y_coord:
+        min: 60
+        max: 70
+      z_coord:
+        min: 0
+        max: 17
+
+#Generators is a single and only refresh mine blocks        
+generators:
+  enabled: true
+  #Prevents block formation for non-island players
+  #Supported Platforms: ASkyBlock,AcidIsland,AdvancedRealm,BentoBox,FabledSkyBlock,IridiumSkyblock,PlotSquared,SuperiorSkyblock
+  skyblock-support: true
+  console-log:
+    #When turned on, it sends a message to the console if any generator is break or place.
+    enabled: false
+  delay: 10 #20 = 1 second reset appearance delay 
+  recipe:
+    #This setting allows you to allow generators to be crafted by players.
+    enabled: true
+    #You can set it in "Slot: Material" format.
+    items:
+      1: DIAMOND
+      3: DIAMOND
+      5: NETHER_STAR
+      7: DIAMOND
+      9: DIAMOND
+  #Block of Generator
+  block:
+    material: SEA_LANTERN
+    data_value: 0
+    name: ' &c◾ &eGenerator &c◾'
+    lore: 
+      - ''
+      - '&7It turns the point above it into a mysterious mine.'
+      - ''
+      
+#You can set the renewal time for the appearances for the people with the relevant authority.
+#It takes the value in minutes.
+renewal-dates:
+  #Permission: time
+  permission: 60
+#You can set how often the controls are made to refresh the appearances.
+#It takes the value in minutes.
+renewal-dates-check-timer: 1
+#The anti-cheat plugins can detect mineblocks created on AIR as cheating while being mined.
+#To remedy this situation, you can set how close the mineblocks will be considered as the crushing area when you come.
+region-break-area: 3
+#Gives players the right to fly in order not to be seen as a flying cheat when you enter the dig area you have set.
+#As soon as the player leaves the field, he takes it back.
+fly-pass: true
+#If the player purchases the chance pack, should all appearances currently active for him be rebuilt?
+auto-refill-appearances-after-chancepack-bought: false
+#Menu settings
+gui:
+  #Common objects used in multiple menus
+  universal-contents:
+    #Used when listing block with a chance
+    #Variables: %blockname%, %chance%
+    block: ' &c◾ &e%blockname% &8(&c%chance%%&8)'
+    #Used on the chance pack purchase gui.
+    #Variables: %packname%, %description%, %cost_exp%, %cost_money%, %blocks%, %status%
+    #(Variables are valid only in lore)
+    chance-pack-with-costs:
+      block:
+        material: PLAYER_HEAD
+        data_value: 0
+        name: '   &8&l◜ &cChance Pack &8&l◞'
+        lore:
+        - '  &7◉ &6%packname%'
+        - ''
+        - '%description%'
+        - ''
+        - ' &7◈ &6Purchasing Costs &7▢'
+        - ' &7◾ &e%cost_exp% &8(&eEXP&8)'
+        - ' &7◾ &e%cost_money% &8(&eMONEY&8)'
+        - ''
+        - ' &7▢ &eContained Blocks &7▢'
+        - '%blocks%'
+        - ''
+        - '&8&l◖ %status% &8&l◗'
+        skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE3ZDIyMjJjZThiNWNhYTI2MWU4YjA5NGNkNTE1ZjZiNWU4MTRlOTgzODIyODEwNDFhNjllYjdkNmI0OWJjMyJ9fX0=
+      #If it needs to be removed from the menu while it is listed, you can set the block it will leave where it is.
+      #Our suggestion is that the empty slots in the menu are the same as the item you filled in.
+      trace:
+        block:
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+          name: ' '
+    #It is used when listing the chance pack on the admin and user pages.
+    #Variables: %packname%, %description%, %blocks%, %status%
+    #(Variables are valid only in lore)
+    chance-pack-without-costs:
+      block:
+        material: PLAYER_HEAD
+        data_value: 0
+        name: '   &8&l◜ &cChance Pack &8&l◞'
+        lore:
+        - '  &7◉ &6%packname%'
+        - ''
+        - '%description%'
+        - ''
+        - ' &7▢ &6Contained Blocks &7▢'
+        - '%blocks%'
+        - ''
+        - '&8&l◖ %status% &8&l◗'
+        skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE3ZDIyMjJjZThiNWNhYTI2MWU4YjA5NGNkNTE1ZjZiNWU4MTRlOTgzODIyODEwNDFhNjllYjdkNmI0OWJjMyJ9fX0=
+      #If it needs to be removed from the menu while it is listed, you can set the block it will leave where it is.
+      #Our suggestion is that the empty slots in the menu are the same as the item you filled in.
+      trace:
+        block:
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+          name: ' '
+    #It is used when listing the renewal list on the admin and user pages.
+    #Variables: %permission%, %renewaldate%
+    #(Variables are valid only in lore)
+    renewal-date:
+      block:
+        material: PLAYER_HEAD
+        data_value: 0
+        name: '&8&l◜ &cRenewal Date &8&l◞'
+        lore:
+        - '&8&l ◖  &7Appearances are reset for &c%renewaldate% minutes&7 if you have the &c%permission% &7privilege &8&l◗'
+        skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTFmMjZjMjFjYmUxZjNlNTg4MmVjNTk1MDFlNTBjNTUyNzU3ZjgxODI5YzY1YzNmYzQzMjEwNTVhZTU2ZDIxYyJ9fX0=
+      #If it needs to be removed from the menu while it is listed, you can set the block it will leave where it is.
+      #Our suggestion is that the empty slots in the menu are the same as the item you filled in.
+      trace:
+        block:
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+          name: ' '
+    #They are used to indicate the active mode in the process of changing the listed mode.
+    mode:
+      chance-pack: '&8&l[ &cChance Pack &8&l]'
+      renewal-date: '&8&l[ &cRenewal Date &8&l]'
+    #%status% value for active chance packs 
+    active-chancepack: '&a◉ &eActive'
+    #%status% value for deactive chance packs
+    deactive-chancepack: '&c◉ &eDeActive'
+    #%status% value for chance packs currently in admin mode
+    admin-chancepack: '&8&l(&7Admin Mode&8&l)'
+    #%status% value for chance packs which you can buy
+    can-buy-chancepack: '&7◉ &eAvailable for purchase.'
+    #%status% value for active renewal packs
+    active-renewal-date: '&a◉ &eActive'
+    #%status% value for open world filter currently mode
+    active-open-world-filter: '&a◉ &eActive'
+    #%status% value for open world filter currently mode
+    deactive-open-world-filter: '&c◉ &eDeActive'
+    #%status% value for deactive renewal packs
+    #Renewal dates cannot be activated by player request.
+    #The best option is always considered active.
+    deactive-renewal-date: '&a◉ &eYou have better!'
+    #%status% value for renewal dates currently in admin mode
+    admin-renewal-date: '&8&l(&7Admin Mode&8&l)'
+    #This setting is used to show open world features in the admin menu.
+    coord-filter:
+    - '&8&l➣ &e%world%'
+    - '  &8&l➣ &eBorders: &c%borders%'
+    #It is the object of warning that there is no element to list.
+    element-not-found:
+      slot: 4
+      block:
+        material: BARRIER
+        data_value: 3
+        name: '&8&l✪ &cWe Did not Find Nothing To List &8&l✪'
+        lore: []
+      #If it needs to be removed from the menu while it is listed, you can set the block it will leave where it is.
+      #Our suggestion is that the empty slots in the menu are the same as the item you filled in.
+      trace:
+        block:
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+          name: ' '
+    #Button that when clicking with shift returns to the previous menu and clicking without shift returns previous page.
+    back-button-with-previous-page:
+      slot: 45
+      block:
+        material: PLAYER_HEAD
+        data_value: 0
+        name: '&8&l⇠ &cGo Back'
+        lore:
+        - '                    &8&l◜&c!&8&l◞'
+        - '&e⇠ &7If you click it will go to the previous page'
+        - '&e⇠⇠ &7If you click &cwith the shift &7it will go to previous menu'
+        - '                    &8&l◜&c!&8&l◞'
+        skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODFjOTZhNWMzZDEzYzMxOTkxODNlMWJjN2YwODZmNTRjYTJhNjUyNzEyNjMwM2FjOGUyNWQ2M2UxNmI2NGNjZiJ9fX0=
+      #If it needs to be removed from the menu while it is listed, you can set the block it will leave where it is.
+      #Our suggestion is that the empty slots in the menu are the same as the item you filled in.
+      trace:
+        block:
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+          name: ' '
+    #Button that returns previous page.
+    back-button-only-previous-page:
+      slot: 45
+      block:
+        material: PLAYER_HEAD
+        data_value: 0
+        name: '&8&l⇠ &cGo Back'
+        lore:
+        - '                    &8&l◜&c!&8&l◞'
+        - '&e⇠ &7If you click it will go to the previous page'
+        - '                    &8&l◜&c!&8&l◞'
+        skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODFjOTZhNWMzZDEzYzMxOTkxODNlMWJjN2YwODZmNTRjYTJhNjUyNzEyNjMwM2FjOGUyNWQ2M2UxNmI2NGNjZiJ9fX0=
+      #If it needs to be removed from the menu while it is listed, you can set the block it will leave where it is.
+      #Our suggestion is that the empty slots in the menu are the same as the item you filled in.
+      trace:
+        block:
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+          name: ' '
+    #Button that returns previous menu.
+    back-button-without-previous-page:
+      slot: 45
+      block:
+        material: PLAYER_HEAD
+        data_value: 0
+        name: '&8&l⇠ &cGo Back'
+        lore:
+        - '                    &8&l◜&c!&8&l◞'
+        - '&e⇠ &7If you click it will go to previous menu'
+        - '                    &8&l◜&c!&8&l◞'
+        skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODFjOTZhNWMzZDEzYzMxOTkxODNlMWJjN2YwODZmNTRjYTJhNjUyNzEyNjMwM2FjOGUyNWQ2M2UxNmI2NGNjZiJ9fX0=
+      #If it needs to be removed from the menu while it is listed, you can set the block it will leave where it is.
+      #Our suggestion is that the empty slots in the menu are the same as the item you filled in.
+      trace:
+        block:
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+          name: ' '
+    #Button that returns next page.
+    next-button:
+      slot: 53
+      block:
+        material: PLAYER_HEAD
+        data_value: 0
+        name: '&8&l⇠ &cGo next page'
+        lore:
+        - '                    &8&l◜&c!&8&l◞'
+        - '&e⇠ &7If you click it will go to next page'
+        - '                    &8&l◜&c!&8&l◞'
+        skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzMzYWU4ZGU3ZWQwNzllMzhkMmM4MmRkNDJiNzRjZmNiZDk0YjM0ODAzNDhkYmI1ZWNkOTNkYThiODEwMTVlMyJ9fX0=
+      #If it needs to be removed from the menu while it is listed, you can set the block it will leave where it is.
+      #Our suggestion is that the empty slots in the menu are the same as the item you filled in.
+      trace:
+        block:
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+          name: ' '
+  #It is the menu used to request confirmation from the user in transactions that require confirmation.
+  yes-no-gui:
+    title: '&8&l 『 &eYes &8&l/ &cNo &8&l』 '
+    #Supported Rows Values: 5 (Hopper), 9 (1 Row), 18 (2 Row), 27 (3 Row), 36 (4 Row), 45 (5 Row), 54 (6 Row)
+    rows: 9
+    #These objects are mandatory functional objects.
+    #Do Not Delete Them!
+    compulsory-content:
+      #Represents the item on which the problem will appear.
+      #Variable: %question% 
+      #Variables are valid only in lore.
+      info:
+        slot: 4
+        block:
+          material: PLAYER_HEAD
+          data_value: 0
+          name: '&8&l 『 &c¿ What is the your answer ? &8&l』 '
+          lore:
+          - ''
+          - '%question%'
+          - ''
+          skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTAzNWM1MjgwMzZiMzg0YzUzYzljOGExYTEyNTY4NWUxNmJmYjM2OWMxOTdjYzlmMDNkZmEzYjgzNWIxYWE1NSJ9fX0=
+      #The button is used to indicate the answer to the question as yes.
+      yes-button:
+        slot: 0
+        block:
+          material: PLAYER_HEAD
+          data_value: 0
+          name: '&a➣ &cYes'
+          lore:
+          - ''
+          - '&8[ &7You can not go back. &8]'
+          - ''
+          skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDJjMjI2MGI3MDI3YzM1NDg2NWU4M2MxMjlmMmQzMzJmZmViZGJiODVmNjY0NjliYmY5ZmQyMGYzYzNjNjA3NyJ9fX0=
+      #It is the button that is used to indicate the answer to the question as no.
+      no-button:
+        slot: 8
+        block:
+          material: PLAYER_HEAD
+          data_value: 0
+          name: '&c➣ &cNo'
+          lore:
+          - ''
+          - '&8[ &7You can not go back. &8]'
+          - ''
+          skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTVkNWM3NWY2Njc1ZWRjMjkyZWEzNzg0NjA3Nzk3MGQyMjZmYmQ1MjRlN2ZkNjgwOGYzYTQ3ODFhNTQ5YjA4YyJ9fX0=
+    #They are optionally added nonfunctional view objects.
+    optional-content:
+      glass:
+        #Supported Formats
+        #x-y,x-y => from x to y (y exclusive)
+        #x => Only x slot
+        slots: 1-4,5-8
+        block:
+          name: ' '
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+  admin-gui:
+    title: '&8&l 『 &cAdmin Panel &8&l』 '
+    #Supported Rows Values: 5 (Hopper), 9 (1 Row), 18 (2 Row), 27 (3 Row), 36 (4 Row), 45 (5 Row), 54 (6 Row)
+    rows: 54
+    #Lists chance packs and renewal dates for admins.
+    #You can choose in which slots these elements will be listed.
+    #Supported Formats
+    #x-y,x-y => from x to y (y exclusive)
+    #x => Only x slot
+    item-slots: 0-45
+    #These objects are mandatory functional objects.
+    #Do Not Delete Them!
+    compulsory-content:
+      #It is the block where the open world settings are listed.
+      #Variables: %blocks%, %coord-filters%
+      #Variables are valid only in lore.
+      open-world-filter-information:
+        slot: 49
+        block:
+          material: PLAYER_HEAD
+          data_value: 0
+          name: '&8&l『 &cOpen world settings &8&l』'
+          lore:
+          - ' '
+          - '&8&l◖ %status% &8&l◗'
+          - ' '
+          - ' &7▢ Blocks to Filter &7▢'
+          - ' %blocks%'
+          - ''
+          - ' &7▢ Regions to Filter &7▢'
+          - ' %coord-filters%'
+          skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjNmNGQ1NTVmYjNiOTM1N2FmNzU4MmYyNzM4MDBmMWRhNGFjNjliMDQyMTBjM2FhMzRlNjNkYjJhNDIzNWJiZiJ9fX0=
+      #When clicked, it runs the /apm help command for the player.
+      help:
+        slot: 48
+        block:
+          material: POPPY
+          data_value: 0
+          name: '     &8&l⇠ &cDo you need help? &8&l ⇢'
+          lore:
+          - '                    &8&l◜&c?&8&l◞'
+          - '&e⇠ &7See Commands You Can Use &e  ⇢'
+          - '                    &8&l◜&c¿&8&l◞'
+      #Allows you to change the type of object currently listed.
+      #Variables: %current_mode%
+      #Variables are valid only in lore.
+      convert-list-mode:
+        slot: 50
+        block:
+          material: PLAYER_HEAD
+          data_value: 0
+          name: '&8&l[ &cChange Listed Object &8&l]'
+          lore:
+          - ''
+          - ' &8&l✠ &eChance Packs &8➣ &cRenewal Dates'
+          - ' &8&l✠ &eRenewal Dates &8➣ &cChance Packs'
+          - ''
+          - ' &8➣ &eCurrent Mode &8➣ %current_mode%'
+          - ''
+          skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzA3Y2U0MzczNGNiZWZiYjNkYTAzZjlhYzFmMDFhM2RmNDU2Y2VlMjMxNTUwYmQyZGQ0MjU4NTU5NGY5In19fQ==
+    #They are optionally added nonfunctional view objects.
+    optional-content:
+      glass:
+        #Supported Formats
+        #x-y,x-y => from x to y (y exclusive)
+        #x => Only x slot
+        slots: 0-54
+        block:
+          name: ' '
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+  user-gui:
+    title: '&8&l 『 &cUser Panel &8&l』 '
+    #Supported Rows Values: 5 (Hopper), 9 (1 Row), 18 (2 Row), 27 (3 Row), 36 (4 Row), 45 (5 Row), 54 (6 Row)
+    rows: 54
+    #Lists chance packs and renewal dates for admins.
+    #You can choose in which slots these elements will be listed.
+    #Supported Formats
+    #x-y,x-y => from x to y (y exclusive)
+    #x => Only x slot
+    item-slots: 0-45
+    #These objects are mandatory functional objects.
+    #Do Not Delete Them!
+    compulsory-content:
+      #When clicked, it runs the /apm help command for the player.
+      help:
+        slot: 48
+        block:
+          material: POPPY
+          data_value: 0
+          name: '     &8&l⇠ &cDo you need help? &8&l ⇢'
+          lore:
+          - '                    &8&l◜&c?&8&l◞'
+          - '&e⇠ &7See Commands You Can Use &e  ⇢'
+          - '                    &8&l◜&c¿&8&l◞'
+      #It shows the information of personal mines available to the user.
+      #Variables: %chunks%, %appearances%
+      #Variables are valid only in lore.
+      appearance-information:
+        slot: 49
+        block:
+          material: PLAYER_HEAD
+          data_value: 0
+          name: '     &8&l⇠ &cAdventure Journal &8&l ⇢'
+          lore:
+          - ''
+          - '&8&l|| &7You have traveled &c%chunks%&7 regions so far and in these areas.'
+          - '&8&l|| &c%appearances% &7mystery mine is waiting for you to reach them.'
+          - ''
+          skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGJlNjIyNmQ2MWVjY2NkYjU3MzJiNmY3MTU2MGQ2NDAxZDJjYTBlZmY4ZTFhYWZiYmUzY2I3M2ZiNWE5ZiJ9fX0=
+      #It is the redirect button to the chance pack purchase page.
+      chancepack-buy:
+        slot: 46
+        block:
+          material: PLAYER_HEAD
+          data_value: 0
+          name: '&8&l 『 &cBuy a Chance Pack &8&l』 '
+          lore: []
+          skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzk2Njg3NjdmMTE0MTgzNWUyYzQ5YWQyYjQxNTU5OGYxYjE2NmJlOTE3MzkwMmEwMjU3ZTc3NzA0ZjkxM2UxZiJ9fX0=
+      #Allows you to change the type of object currently listed.
+      #Variables: %current_mode%
+      #Variables are valid only in lore.
+      convert-list-mode:
+        slot: 50
+        block:
+          material: PLAYER_HEAD
+          data_value: 0
+          name: '&8&l[ &cChange Listed Object &8&l]'
+          lore:
+          - ''
+          - ' &8&l✠ &eChance Packs &8➣ &cRenewal Dates'
+          - ' &8&l✠ &eRenewal Dates &8➣ &cChance Packs'
+          - ''
+          - ' &8➣ &eCurrent Mode &8➣ %current_mode%'
+          - ''
+          skull_owner: custom-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzA3Y2U0MzczNGNiZWZiYjNkYTAzZjlhYzFmMDFhM2RmNDU2Y2VlMjMxNTUwYmQyZGQ0MjU4NTU5NGY5In19fQ==
+    #They are optionally added nonfunctional view objects.
+    optional-content:
+      glass:
+        #Supported Formats
+        #x-y,x-y => from x to y (y exclusive)
+        #x => Only x slot
+        slots: 0-54
+        block:
+          name: ' '
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+  chancepack-buy:
+    title: '&8&l 『 &cBuy a Chance Pack &8&l』 '
+    #Supported Rows Values: 5 (Hopper), 9 (1 Row), 18 (2 Row), 27 (3 Row), 36 (4 Row), 45 (5 Row), 54 (6 Row)
+    rows: 54
+    #Lists chance packs and renewal dates for admins.
+    #You can choose in which slots these elements will be listed.
+    #Supported Formats
+    #x-y,x-y => from x to y (y exclusive)
+    #x => Only x slot
+    item-slots: 0-45
+    #They are optionally added nonfunctional view objects.
+    optional-content:
+      glass:
+        #Supported Formats
+        #x-y,x-y => from x to y (y exclusive)
+        #x => Only x slot
+        slots: 0-45,46-54
+        block:
+          name: ' '
+          material: BLACK_STAINED_GLASS_PANE
+          data_value: 0
+messages:
+  chancepack-create: CHAT||&c&l|&r&c➣ &7You created chance pack named &e%pack%&7.
+  chancepack-give:
+    executor: CHAT||&c&l|&r&c➣ &7Chance pack named &e%pack% &7given to the &e%target%&7.
+    target: TITLE||&8&l(&c!&8&l) &cNew Chance Pack &8&l(&c!&8&l)||&7You can now use chance pack named &c%pack%&7.||10||70||20
+  chancepack-remove:
+    executor: CHAT||&c&l|&r&c➣ &e%target% &7can''t use chance pack named &e%pack% &7anymore.
+    target: TITLE||&8&l(&c!&8&l) &cYou Lost Chance Pack &8&l(&c!&8&l)||&7You can''t use chance pack named &c%pack% &7anymore.||10||70||20
+  chancepack-edit-add:
+    executor: 'ACTIONBAR||&c&l|&r&c➣ &7Added new appearance chance to chance pack named &c%pack%&7, previous value: &e%previous%.'
+  chancepack-edit-remove:
+    executor: 'ACTIONBAR||&c&l|&r&c➣ &7Removed appearance chance from chance pack named &c%pack%&7, previous value: &e%previous%.'
+  chancepack-edit-money:
+    executor: 'ACTIONBAR||&c&l|&r&c➣ &7Changed required money in chance pack named &c%pack%&7, previous value: &e%previous%.'
+  chancepack-edit-exp:
+    executor: 'ACTIONBAR||&c&l|&r&c➣ &7Changed required exp in chance pack named &c%pack%&7, previous value: &e%previous%.'
+  chancepack-edit-defaultmode:
+    executor: 'CHAT||&c&l|&r&c➣ &7Changed default mode of chance pack named &c%pack%&7, previous value: &c%previous%'
+  selector-give:
+    single: ACTIONBAR||&c&l|&r&c➣ &7Single mineblock selection tool was given.
+    multi: ACTIONBAR||&c&l|&r&c➣ &7Multi mineblock selection tool was given.
+  appearances-reset:
+    executor: CHAT||&c&l|&r&c➣ &7Appearances of mysterious mines are renewed for &c%target%&7.
+    target: TITLE||&8&l(&c!&8&l) &cMysterious Mines Renewed &8&l(&c!&8&l)||&cThey are waiting for you to discover...||10||70||20
+  renewal-date-reset:
+    executor: 'CHAT||&c&l|&r&c➣ &7Appearance renewal date has been reset for &c%target%&7. Time left: &c%date%'
+    target: 'TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&7Your appearance renewal date has been reset. Time left: &c%date%||10||70||20'
+  generator-give:
+    executor: 'CHAT||&c&l|&r&c➣ &7You gived &c%amount% &7generator to &c%target%&7'
+    target: 'TITLE||&8&l(&c!&8&l) &cGenerator Arrived &8&l(&c!&8&l)||&c%amount% &7new generator arrived!||10||70||20'
+  chancepack-mode-convert: ACTIONBAR||&c&l|&r&c➣ &7You''ve changed chance pack mode.
+  selector-selected-multi: 'ACTIONBAR||&c&l|&r&c➣ &7Multi selector selected. Selected points:  &8&l(&c%first% &7- &c%second%&8&l)'
+  selector-remove-single: ACTIONBAR||&c&l|&r&c➣ &7The block you clicked has now lost its mineblock function.
+  selector-create-single: ACTIONBAR||&c&l|&r&c➣ &7The block you clicked is defined as a mineblock.
+  selector-create-multi: ACTIONBAR||&c&l|&r&c➣ &7From the &c%first% &7coordinate to the &c%second% &7coordinate defined as a mineblock.
+  timeleft: 'TITLE||&8&l(&c!&8&l) &e%player% &8&l(&c!&8&l)|| &7Time left for the mysterious mine renewal: &e%date%||10||70||20'
+  appearances-reset-naturally: 'ACTIONBAR||&c&l|&r&c➣ &7Mysterious mine appearances renewed!'
+  renewaldate-succes-create: CHAT||&c&l|&r&c➣ &7For players who has permission &c%permission% &7mineblock appearances will renewed &c%date% minutes &7from now on.
+  renewaldate-succes-set: CHAT||&c&l|&r&c➣ &7For players who has permission &c%permission% &7mineblock appearances will renewed &c%date% minutes &7from now on.
+  renewaldate-succes-delete: CHAT||&c&l|&r&c➣ &cDefined waiting time for &c%permission% &7 authority has been reset.
+  selector-remove-multi:
+    question:
+    - '&7Block you click is part of MineBlock'
+    - '&7Do you still want to &cdelete &7MineBlock?'
+    - ' '
+    - '&8&l➣ &eBorders: &8(&c%posOne% &7- &c%posTwo%&8)'
+    succes-message: TITLE|| ||&8(&c!&8) &cProcess Completed. &8(&c!&8)||10||70||20'
+    cancel-message: TITLE|| ||&8(&c!&8) &cProcess Cancelled. &8(&c!&8)||10||70||20'
+  chancepack-buy:
+    question:
+    - '&c➣ &7Do you confirm the &cpurchase'
+    - '&7of the chance pack you see below? '
+    - ' '
+    - '%details%'
+    succes: TITLE|| ||&8(&c!&8) &7You bought &e%packname% &8(&c!&8)||10||70||20
+    cancel: TITLE|| ||&8(&c!&8) &cProcess cancelled &8(&c!&8)||10||70||20'
+  reload: CHAT||&8&l(&c!&8&l) &cSystem reloaded. &8&l(&c!&8&l)
+error:
+  permission: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7You do not have the required permission.||10||70||20
+  console: CHAT||ApiaPersonalMine|You cannot use this command from the console!
+  parse-integer: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7You need to type an integer||10||70||20
+  chancepack-notfound: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7Cannot find chance pack||10||70||20
+  player-notfound: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7You need to type a player name that &aonline||10||70||20
+  player-chancepack-already-have: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7Player already &chave &7this chance pack.||10||70||20
+  player-chancepack-not-have: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7Player &cdoesn''t already have &7this chance pack.||10||70||20
+  chancepack-already-created: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7A chance pack with this name has &calready &7been created.||10||70||20
+  material-notfound: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7Check the &cMaterial name&7!||10||70||20
+  mineblock-notfound: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7There is not any mine block||10||70||20
+  mineblock-already-have: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7There is &calready &7a mine block.||10||70||20
+  pos-is-empty: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7You need to select a position.||10||70||20
+  renewaldate-already-created: CHAT||&c|➣ &7There is already a renewal date with that name so will use this value to update real one instead.
+  renewaldate-not-found: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7There is not any renewal date with that name.||10||70||20
+  money-required: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7You don''t have enough money to buy the chance pack.||10||70||20
+  exp-required: TITLE||&8&l(&c!&8&l) &cWarning &8&l(&c!&8&l)||&c|➣&7You do not have enough experience points to get the chance pack.||10||70||20
+  generator-disabled: CHAT||&8&l(&c!&8&l) &cGenerator System Disabled. &8&l(&c!&8&l)
+
+sounds:
+  break-single-mineblock: BLOCK_METAL_BREAK
+  break-multi-mineblock: BLOCK_METAL_BREAK
+  break-generator-mineblock: BLOCK_METAL_BREAK
+  break-open-world-mineblock: BLOCK_METAL_BREAK
+  command-success: BLOCK_METAL_BREAK
+  command-failed: BLOCK_METAL_BREAK
+  generator-place: BLOCK_METAL_BREAK
+  gui-click: BLOCK_METAL_BREAK
+  undefined-errors: BLOCK_METAL_BREAK
+
+versions:
+  config: 4

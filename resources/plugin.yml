@@ -1,0 +1,11 @@
+name: ApiaPersonalMine
+main: me.osoloturk.personalmine.APM
+version: maven.version
+description: Unique Personal Mine Plugin
+authors: [oSoloTurk]
+api-version: 1.13
+depend: [Vault, ProtocolLib]
+softdepend: [AcidIsland, AdvancedRealm, ASkyBlock, BentoBox, FabledSkyBlock, IridiumSkyblock, SuperiorSkyblock2]
+commands:
+  apm:
+    description: Main command of ApiaPersonalMine
